@@ -1,0 +1,3 @@
+# Codex
+This repository has Usefull code such as easy algorithm, Data structure, Project in university etc...
+But i'm not professional Software Engineer. So please Using the code as Reference to your study.
