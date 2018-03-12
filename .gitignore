@@ -14,6 +14,8 @@
 
 *.so
 
+*.swp
+
 a.out
 
 # Packages #
