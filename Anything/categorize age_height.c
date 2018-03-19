@@ -27,7 +27,7 @@
 
 void input_tokenize(char *data);
 void categorize(int *data);
-int count=0;
+static	int count=0;
 int main(int argc,char **argv){
 	input_tokenize(argv[1]);
 	return 0;
