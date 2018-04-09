@@ -2,9 +2,6 @@
 int generate(int n_times);
 int main() {
 
-	int n_digits = 10;
-	int sum_of_generator = 0;
-	int sum_of_all = 0, sum_of_self = 0;
 	int check_generator[10000] = { 0, };
 	int generate_state=0;
 	for (int i = 1; i <= 10000; i++) {
