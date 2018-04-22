@@ -1,10 +1,10 @@
-##[4673번 문제[성공]][https://github.com/ehdwn1991/Codex/blob/master/backjoon/Level_5/4673.c]
+##[4673번 문제[성공]](https://github.com/ehdwn1991/Codex/blob/master/backjoon/Level_5/4673.c)
 셀프넘버
 [Wiki 참고][https://en.wikipedia.org/wiki/Self_number] 
 
 
 
-##[1065번 문제[성공]][https://github.com/ehdwn1991/Codex/blob/master/backjoon/Level_5/1065.c]
+##[1065번 문제[성공]](https://github.com/ehdwn1991/Codex/blob/master/backjoon/Level_5/1065.c)
 한수
 
 > 각 자리수가 등차 수열을 이루면 한수로 취급한다.
@@ -15,7 +15,7 @@
 
 
 
-##[2448번 문제(성공)][https://github.com/ehdwn1991/Codex/blob/master/backjoon/Level_5/2448.c]
+##[2448번 문제(성공)](https://github.com/ehdwn1991/Codex/blob/master/backjoon/Level_5/2448.c)
 파스칼 삼각형 별찍기
 >입력 N줄이 주어지고(N은 3*2^K의 수로 보장됨), 최대 열의 갯수는2N-1개가 됨.
 >N줄의 최대 값은 3072이고, 열의 최대 값은 60143개임
@@ -113,4 +113,4 @@ if(i>2)
 //결국 별이 찍혀야 하는 부분만 1이 저장되고 아닌 부분은 0이 저장되는것
 ```
 이분 블로그를 참고하고 작성했습니다.
-[http://codersbrunch.blogspot.kr/2016/12/2448-11.html][http://codersbrunch.blogspot.kr/2016/12/2448-11.html]
+[http://codersbrunch.blogspot.kr/2016/12/2448-11.html](http://codersbrunch.blogspot.kr/2016/12/2448-11.html)
