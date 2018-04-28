@@ -19,6 +19,13 @@
 a.out
 
 *.txt
+
+test.c
+test*
+t.c
+t1.c
+
+
 # Packages #
 
 ############
