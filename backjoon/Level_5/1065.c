@@ -24,6 +24,7 @@ int main(){
 			}
 			else{
 			// printf("two's com : %d  0:%d 1:%d 2:%d\n",i ,place_value[0],place_value[1],place_value[2]);
+			printf("%d\n",i );
 			}
 
 
