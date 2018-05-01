@@ -75,3 +75,28 @@ ehthumbs.db
 Icon?
 
 Thumbs.db
+
+#ignore executable file #
+#$ find . -executable -type f >>.gitignore
+./algo_prob/standard Input/a.out
+./algo_prob/WEIRD/a.out
+./algo_prob/Endians/a.out
+./algo_prob/URI Decoding/a.out
+./algo_prob/XHAENEUNG/a.out
+./backjoon/Level_7/11654
+./backjoon/Level_7/1157
+./backjoon/Level_7/10809
+./backjoon/Level_7/a.out
+./backjoon/Level_6/100039
+./backjoon/Level_6/test
+./backjoon/Level_6/8958
+./backjoon/Level_6/a.out
+./.git/hooks/pre-push.sample
+./.git/hooks/pre-rebase.sample
+./.git/hooks/pre-commit.sample
+./.git/hooks/post-update.sample
+./.git/hooks/pre-applypatch.sample
+./.git/hooks/commit-msg.sample
+./.git/hooks/update.sample
+./.git/hooks/prepare-commit-msg.sample
+./.git/hooks/applypatch-msg.sample
