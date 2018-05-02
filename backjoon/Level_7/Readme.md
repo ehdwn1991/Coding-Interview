@@ -245,7 +245,7 @@ int main(){
 >그냥 조건에 맞춘 노가다 인듯 싶다...중요한건 다이얼에서 1과 0은 입력이 없다고 보면 된다.
 >2~9까지의 수만 쓰인다 생각하고 풀면됨
 
-##[2941번[크로아티아 알파벳](https://www.acmicpc.net/problem/5622)
+##[2941번[크로아티아 알파벳]](https://www.acmicpc.net/problem/5622)
 ```c
 #include <stdio.h>
 #include <string.h>
