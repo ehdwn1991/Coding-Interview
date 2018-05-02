@@ -69,3 +69,7 @@ long long diagonal_plus(long long *up,long long *down,int count){
 return *(up+count)+*(down+count-1);
 }
 ```
+
+
+
+[모든 내용은 Git Hub에도있습니다.](https://github.com/ehdwn1991/Codex/tree/master/backjoon/Dynamic)
