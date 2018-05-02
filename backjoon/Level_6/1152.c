@@ -3,23 +3,10 @@
 #include <stdlib.h>
 int main(){
 
-	int count=0,is_space=0,is_word=0; //is_space => 0=before space 1=after space
+	int count=0,is_word=0;
 	char input;
-
-	// fgets(buf,sizeof(buf),stdin);
-
-	// printf("len: %lu\n",strlen(buf) );
-
-	// for (int i = 0; i < strlen(buf); ++i)
-	// {
-	// 	if(buf[i]==' '||buf[i]==10){
-	// 		count++;
-
-
-	// 	}
-
-
-	// }
+	//is_word=0 =>until not using any word
+	//is_word=1 =>wherever used any word before using space
 
 	while((input=getchar())!=EOF){
 		if(input==10){
@@ -31,12 +18,10 @@ int main(){
 			is_word=1;
 		}
 		else{
-			if(input==32&&is_word==0){//is space
-				is_space=1;
+			if(input==32&&is_word==0){
 			}
 			else if(input==32&&is_word==1){
 				count++;
-				is_space=1;
 				is_word=0;
 			}
 		}
