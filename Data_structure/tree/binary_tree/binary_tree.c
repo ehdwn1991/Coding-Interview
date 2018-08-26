@@ -81,24 +81,22 @@ void node_remove(Node *node){
 void Deletion(Node **node, int data){
 	Node *loc = *node;
 	Node *parent_node =NULL;
-	Node *right_node=NULL;
-	Node *right_sub =NULL;
-	Node *child=NULL;
-	Node *left_most=NULL;
-	while(loc!=NULL){
-			if(loc->data == data){
-				break;
-			}
-			if(loc->data > data){
-				parent_node = loc;
-				loc= loc->left;
-			}
-			else{
-				parent_node = loc;
-				loc= loc->right;
-			}
 
+	Node *child=NULL;
+	while(loc!=NULL){
+		if(loc->data == data){
+			break;
 		}
+		if(loc->data > data){
+			parent_node = loc;
+			loc= loc->left;
+		}
+		else{
+			parent_node = loc;
+			loc= loc->right;
+		}
+
+	}
 
 	// 단일 노드 삭제
 	if((loc->left)==NULL && (loc->right)==NULL){
@@ -113,8 +111,16 @@ void Deletion(Node **node, int data){
 		node_remove(loc);
 	}
 	// 두개의 서브트리 존재
+	// 지우고 싶은 노드의 위치가 loc
 	else if((loc->left)!=NULL && (loc->right)!=NULL){
-		right_sub = loc->right;
+		Node *right_sub_first=NULL;
+		Node *right_node=NULL;
+		Node *right_sub =NULL;
+		Node *left_most=NULL;
+		Node *right_most=NULL;
+
+		right_sub_first = loc->right;
+		//지우고 싶은 노드의 오른쪽 서브트리 의 첫 노드
 		while(right_sub->left!=NULL){
 			left_most = right_sub;
 			right_sub = right_sub->left;
@@ -126,6 +132,8 @@ void Deletion(Node **node, int data){
 			right_sub->data = right_node->data;
 			right_sub->right = NULL;
 			node_remove(right_node);
+
+			loc ->data = left_most->data;
 
 			left_most->left=right_sub->right;
 		}
