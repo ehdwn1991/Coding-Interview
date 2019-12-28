@@ -1,26 +1,49 @@
 {
-// tasks.json 형식에 대한 설명서는 
-    // https://go.microsoft.com/fwlink/?LinkId=733558의 내용을 참조하세요.
     "version": "2.0.0",
     "tasks": [
         {
             "type": "shell",
             "label": "gcc build active file",
-            "command": "/usr/bin/gcc",
+            // "command": "gcc",
+            "command": "clang++",
             "args": [
                 "-std=c99",
+                "-w",
                 "${file}",
+                "-o",
+                "${fileBasenameNoExtension}",
+                "--debug"
             ],
-            "options": {
-                "cwd": "/usr/bin"
+            "problemMatcher": {
+                "fileLocation": [
+                    "relative",
+                    "${workspaceRoot}"
+                ],
+                "pattern": {
+                    // The regular expression. 
+                   //Example to match: helloWorld.c:5:3: warning: implicit declaration of function 'prinft'
+                    "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning error):\\s+(.*)$",
+                    "file": 1,
+                    "line": 2,
+                    "column": 3,
+                    "severity": 4,
+                    "message": 5
+                }
             },
-            "problemMatcher": [
-                "$gcc"
-            ],
+
             "group": {
                 "kind": "build",
                 "isDefault": true
             }
+        },
+        {
+
+            "label": "execute",
+
+            "command": "${fileDirname}/${fileBasenameNoExtension}",
+
+            "group": "test"
+
         }
     ]
 }
