@@ -1,12 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct mess{
-    int Weight;
-    int Height;
-    int score;
-    struct mess *next;
-}Mess;
 
 typedef struct top{
     int Weight;
@@ -14,30 +8,29 @@ typedef struct top{
     int score;
 }TOP;
 
-int H[51]={0,};
-int W[51]={0,};
 int main(){
     TOP *topVal;
     int count;
     scanf("%d",&count);
-    topVal->score=count;
+    TOP *topList = (TOP*)malloc(sizeof(TOP)*count);
     for (size_t i = 0; i < count; i++)
     {
-        scanf("%d %d",H[i],W[i]);
-        if(topVal->Height<H[i] && topVal->Weight<W[i]){
-            topVal->Height=H[i];
-            topVal->Weight=W[i];
-            topVal->score--;
-        }
+        scanf("%d %d",&topList[i].Height,&topList[i].Weight);
+
     }
-    
-printf("%d\n",topVal->score);
-}
+
+     for (int i = 0; i < count; i++){
+        for (int j = 0; j < count; j++){
+            if(topList[i].Height>topList[j].Height&&topList[i].Weight>topList[j].Weight)
+                topList[j].score++;
+        }
+     }
 
 
-
-Mess *newValue(int W,int H){
-    Mess *add_element=(Mess*) malloc(sizeof(Mess));
-return add_element;
+    for (size_t i = 0; i < count; i++)
+    {
+        // printf("%d %d %d \n",topList[i].Height,topList[i].Weight,(topList[i].score)+1);
+        printf("%d ",(topList[i].score)+1);
+    }
 }
 

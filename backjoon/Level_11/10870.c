@@ -4,7 +4,7 @@
 1,1,2,3,5,8,13,21,34,55
 1~10 natural number sumation == Nth 피보나치의 값
  */
-int map[1000]={0,};
+int map[100000]={0,};
 int main(){
 int N;
 scanf("%d",&N);
