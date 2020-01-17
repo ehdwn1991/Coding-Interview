@@ -38,7 +38,9 @@ while(scanf("%ld",&N)){
         break;
     }
 printf("%ld\n",pillMsg(N,0));
+
 memset(map,0,sizeof(map));
 
 }
+    
 }
