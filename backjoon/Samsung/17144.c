@@ -21,6 +21,9 @@
 0 19(18+1) 11||(6+5(||7-(7/5)*2))
 0 10||(6+4||(10-(10/5)*3)) 1
 0  0 20
+
+
+Ar,c (-1 ≤ Ar,c ≤ 1,000)
  */
 
 
@@ -29,6 +32,7 @@ int nowMap[2501][2501]={0,};
 int sequenceMap[2501][2501]={0,};
 
 int R=0,C=0;
+// up down left right
 int directionRow[4]={1,-1,0,0}; // up down
 int directionCol[4]={0,0,-1,1}; // left right
 int availableDirection[4]={0,};
@@ -36,29 +40,67 @@ int locCirculator[4]={0,};
 int sol(int time){
     for (size_t i = 0; i < time; i++)
     {
-        dustClockWise();
-        memset(nowMap,-1,sizeof(nowMap));
+        dustFlowAction();
+        memset(nowMap,0,sizeof(nowMap));
         memcopy(nowMap,sequenceMap,sizeof(nowMap));
-        airClockWise();
+        memset(sequenceMap,0,sizeof(sequenceMap));
+        airFlowAction();
     }
     
 }
 
-void airClockWise(){
-    int upRowTemp,downRowTemp;
-    int leftColTemp,rightColTemp;
+void horizonWind(int i, int j,int direction){
+    int templ;
+    
+    while(){
+
+    }
+
+}
+
+void verticalWind(){
+
+}
+
+
+void airCirculate(){
+
     for (size_t i = 0; i < R; i++)
     {
         for (size_t j = 0; j < C; j++)
         {
-            upRowTemp=nowMap[locCirculator[0]][locCirculator[1]];
+
+        }
+        
+    }
+    
+
+
+}
+
+
+void airFlowAction(){
+    int upRowTemp,downRowTemp;
+       for (size_t i = 0; i < R; i++)
+    {
+        for (size_t j = 0; j < C; j++)
+        {
+            if(nowMap[i][j]==-1){
+                availableDirection[0]=i;
+                availableDirection[1]=j;
+                availableDirection[2]=i+1;
+                availableDirection[3]=j;
+                airCirculate();
+                memset(availableDirection,-1,sizeof(availableDirection));
+                i=i+1;
+            }
         }
         
     }
     
 }
 
-void dustClockWise(){
+void dustFlowAction(){
 
     memset(sequenceMap,-1,sizeof(sequenceMap));
     for (size_t i = 0; i < R; i++)
@@ -69,8 +111,14 @@ void dustClockWise(){
         }
         
     }
-    
+}
 
+int canAirFlow(int i, int j, int d){ // d is direction  up down left right 0 1 2 3
+    if((i+directionRow[d])>=0&& (i+directionRow[d])<= R &&j+directionCol[d]>=0&&j+directionCol[d]<=C){
+
+    }else{
+
+    }
 
 }
 
@@ -81,7 +129,7 @@ void spreadDust(int i, int j){
    int spreadCnt=0;
    beforeDust=nowMap[i][j];
    spreadDustValue= beforeDust/5;
-   spreadCnt=canSpread(i,j);
+   spreadCnt=canDustSpread(i,j);
    afterDust=(beforeDust-(beforeDust/5)*spreadCnt);
 for (size_t k = 0; k < 4; k++)
 {
@@ -95,7 +143,7 @@ for (size_t k = 0; k < 4; k++)
     memset(availableDirection,0,sizeof(availableDirection));
 }
 
-int canSpread(int i,int j){
+int canDustSpread(int i,int j){
     int cnt;
     for (size_t d = 0; d < 4; d++)
     {
