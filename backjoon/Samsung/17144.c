@@ -92,8 +92,6 @@ void blowWind(){
         r--;
     }
 
-
-
     c=0;
     //uppper aircleaner right
     while(c<C){
@@ -128,8 +126,6 @@ void blowWind(){
         }
         c--;
     }
-
-
     //lower aircleaner down
     r=locCirculator[2];
     while(r<R){
@@ -139,7 +135,6 @@ void blowWind(){
         }
         r++;
     }
-
     c=0;
     //lower aircleaner right
     while(c<C){
