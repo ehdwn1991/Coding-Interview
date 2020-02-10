@@ -1,27 +1,27 @@
 {
     "version": "2.0.0",
+    "runner": "terminal",
+    "type": "shell",
+    "echoCommand": true,
+    "presentation": {
+        "reveal": "always"
+    },
     "tasks": [
         {
-            "type": "shell",
-            "label": "gcc build active file",
-            // "command": "gcc",
-            "command": "clang++",
+            "label": "save and compile for C++",
+            "command": "g++",
             "args": [
-                "-std=c99",
-                "-w",
                 "${file}",
                 "-o",
-                "${fileBasenameNoExtension}",
-                "--debug"
+                "${fileDirname}/${fileBasenameNoExtension}"
             ],
+            "group": "build",
             "problemMatcher": {
                 "fileLocation": [
                     "relative",
                     "${workspaceRoot}"
                 ],
                 "pattern": {
-                    // The regular expression. 
-                   //Example to match: helloWorld.c:5:3: warning: implicit declaration of function 'prinft'
                     "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning error):\\s+(.*)$",
                     "file": 1,
                     "line": 2,
@@ -29,21 +29,54 @@
                     "severity": 4,
                     "message": 5
                 }
-            },
-
-            "group": {
-                "kind": "build",
-                "isDefault": true
             }
         },
         {
-
+            "label": "save and compile for C",
+            "command": "gcc",
+            "args": [
+                "${file}",
+                "-o",
+                "${fileDirname}/${fileBasenameNoExtension}"
+            ],
+            "group": "build",
+            "problemMatcher": {
+                "fileLocation": [
+                    "relative",
+                    "${workspaceRoot}"
+                ],
+                "pattern": {
+                    "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning error):\\s+(.*)$",
+                    "file": 1,
+                    "line": 2,
+                    "column": 3,
+                    "severity": 4,
+                    "message": 5
+                }
+            }
+        },
+        {
             "label": "execute",
-
-            "command": "${fileDirname}/${fileBasenameNoExtension}",
-
-            "group": "test"
-
+            "command": "cmd",
+            "group": "test",
+            "args": [
+                "/C",
+                "${fileDirname}\\${fileBasenameNoExtension}"
+            ]
+        },
+        {
+            "type": "shell",
+            "label": "gcc.exe build active file",
+            "command": "C:/Program Files/mingw-w64/x86_64-7.2.0-posix-seh-rt_v5-rev1/mingw64/bin/gcc.exe",
+            "args": [
+                "-g",
+                "${file}",
+                "-o",
+                "${fileDirname}\\${fileBasenameNoExtension}.exe"
+            ],
+            "options": {
+                "cwd": "C:/Program Files/mingw-w64/x86_64-7.2.0-posix-seh-rt_v5-rev1/mingw64/bin"
+            }
         }
     ]
 }
