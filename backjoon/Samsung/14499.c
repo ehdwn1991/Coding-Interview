@@ -11,7 +11,13 @@ int rollingDice[7]={0,};
 int nMap[21][21]={0,};
 int command[1001]={0,};
 int N,M,X,Y,K;
-
+    // dice[1]='D';
+    // dice[2]='W';
+    // dice[3]='N';
+    // dice[4]='S';
+    // dice[5]='E';
+    // dice[6]='U';
+char seq[7]={'X','D','W','N','S','E','U'};
 
 int isValidRolling(int path){
     if(X+xDirection[path-1]>=0 && X+xDirection[path-1]<N &&Y+yDirection[path-1]>=0 && Y+yDirection[path-1]<M){
@@ -69,12 +75,6 @@ void westRolling( ){
     rollingDice[horizontalRoll[0]]=tmp;
 
 }
-
-
-
-
-
-
 void initDice(){
     // dice[1]='D';
     // dice[2]='W';
@@ -87,7 +87,15 @@ void initDice(){
         rollingDice[i]=0;
     }
 }
+void showDice(){
+    puts("DiceMap");
 
+    for (size_t i = 1; i <= 6; i++)
+    {
+        printf("[%d]=%d (%c)\n",i,rollingDice[i],seq[i]);
+    }
+    puts("");
+}
 
 int sol(){
     int i=0;
@@ -121,7 +129,7 @@ int sol(){
        nMap[X][Y]= rollingDice[1];
     }
     printf("%d\n",rollingDice[6]);
-
+// showDice();
 
         }
     }
