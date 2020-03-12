@@ -1,9 +1,10 @@
 #include <stdio.h>
 
+
 int beeHive[11][11] = {
     0,
 };
-int weightHive[11][10] = {
+int weightHive[101] = {
     0,
 };
 int vHive[11] = {
@@ -14,13 +15,18 @@ void showH();
 int N, M, C;
 int maxWeight=0;
 
-void weightDfs(int row, int col,int cnt){
+void weightDfs(int row, int col,int cnt, int sumOfHoney){
     int i;
+    if(cnt >=C){
+          maxWeight= sumOfHoney > maxWeight ? sumOfHoney: maxWeight;
+    }
+
 for ( i = col; i < N; i++)
 {
     if(vHive[col]==1) continue;
     vHive[col]=1;
-    weightDfs(row,col+1,cnt++);
+    
+    weightDfs(row,col+1,beeHive[row][col+1],sumOfHoney+beeHive[row][col+1]);
     vHive[col]=0;
 }
 
@@ -30,17 +36,7 @@ for ( i = col; i < N; i++)
 void checkWeight(int row,int col){
     int validWeight=0;
     int temp=0,i;
-    for (i = 0; i < M; i++)
-    {
-        validWeight+=beeHive[row][col+i];
-        // if(validWeight<=C){
-            temp=beeHive[row][col+i];
-            weightHive[row][col]+=(temp*temp);
-        // }
-    }
-    if(weightHive[row][col]>maxWeight){
-        maxWeight=weightHive[row][col];
-    }
+
 
 
 }
