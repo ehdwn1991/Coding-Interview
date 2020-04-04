@@ -1,95 +1,86 @@
 #include <stdio.h>
-
-
+#include <string.h>
+#define MAX(a, b) (a > b ? a : b)
+#define SQUARE(a) ((a) * (a))
 int beeHive[11][11] = {
     0,
 };
-int weightHive[101] = {
+int weightHive[11][11] = {
     0,
 };
-int vHive[11] = {
-    0,
-};
-void showWeight();
-void showH();
+
 int N, M, C;
-int maxWeight=0;
+int maxWeight = 0;
 
-void weightDfs(int row, int col,int cnt, int sumOfHoney){
-    int i;
-    if(cnt >=C){
-          maxWeight= sumOfHoney > maxWeight ? sumOfHoney: maxWeight;
-    }
-
-for ( i = col; i < N; i++)
+int combinationMaxExpected(int row, int col)
 {
-    if(vHive[col]==1) continue;
-    vHive[col]=1;
-    
-    weightDfs(row,col+1,beeHive[row][col+1],sumOfHoney+beeHive[row][col+1]);
-    vHive[col]=0;
-}
 
+    int sol = 0;
 
-}
-
-void checkWeight(int row,int col){
-    int validWeight=0;
-    int temp=0,i;
-
-
-
-}
-void buildWeight(){
-    int row,col;
-    for ( row = 0; row < N; row++)
+    for (int i = 0; i < N; i++)
     {
-        for ( col = 0; col <= N-M; col++)
+        for (int j = 0; j <= N - M; j++)
         {
-            checkWeight(row,col);
+            if (i == row)
+            {
+                if (j >= col + M)
+                    sol = MAX(sol, weightHive[i][j]);
+            }
+            else
+            {
+                    sol = MAX(sol, weightHive[i][j]);
+            }
         }
-        
     }
-    showWeight();
-    
+
+    return sol;
 }
 
+int weightDfs(int row, int col, int cnt, int sumOfHoney, int sumOfSquare)
+{
+    int retval = 0, a = 0;
+    if (cnt == M)
+    {
+        return 0;
+    }
+    if (sumOfHoney + beeHive[row][col] <= C)
+    {
+        retval = weightDfs(row, col + 1, cnt + 1, sumOfHoney + beeHive[row][col], sumOfSquare + SQUARE(beeHive[row][col])) + SQUARE(beeHive[row][col]);
+    }
+    a = weightDfs(row, col + 1, cnt + 1, sumOfHoney, sumOfSquare);
+    retval = MAX(retval, a);
+    return weightHive[row][col] = retval;
+}
 
-int sol(){
+void buildWeight()
+{
+    int row, col;
+    int retval;
+    for (row = 0; row < N; row++)
+    {
+        retval = 0;
+        for (col = 0; col <= N - M; col++)
+        {
+            retval = MAX(retval, weightDfs(row, col, 0, 0, 0));
+        }
+    }
+}
+
+int sol()
+{
+    maxWeight = 0;
+    memset(weightHive, 0, sizeof(weightHive));
     buildWeight();
-
-
-
-maxWeight=0;
-return 1;
-}
-void showWeight(){
-    int r,c;
-     for (r = 0; r < N; r++)
+    for (int i = 0; i < N; i++)
+    {
+        for (int j = 0; j <= N - M; j++)
         {
-            for (c = 0; c <= N-M; c++)
-            {
-                printf("%d ",weightHive[r][c]);
-            }
-            printf("\n");
+            maxWeight = MAX(maxWeight, combinationMaxExpected(i, j) + weightHive[i][j]);
         }
-    printf("\n###############\n");
-
+    }
+    return maxWeight;
 }
-void showMap(){
-    int r,c;
-    printf("N:%d  M:%d  C:%d\n",N,M,C);
-     for (r = 0; r < N; r++)
-        {
-            for (c = 0; c < N; c++)
-            {
-                printf("%d ",beeHive[r][c]);
-            }
-            printf("\n");
-        }
-    printf("\n###############\n");
 
-}
 int main()
 {
     int TC, i, r, c;
@@ -97,19 +88,15 @@ int main()
     for (i = 1; i <= TC; i++)
     {
 
-        memset(beeHive,0,sizeof(beeHive));
-        memset(weightHive,0,sizeof(weightHive));
+        memset(beeHive, 0, sizeof(beeHive));
         scanf("%d %d %d", &N, &M, &C);
         for (r = 0; r < N; r++)
         {
             for (c = 0; c < N; c++)
             {
-                scanf("%d",&beeHive[r][c]);
+                scanf("%d", &beeHive[r][c]);
             }
         }
-        showMap();
-        printf("#%d %d",i,sol());
-        
-
+        printf("#%d %d\n", i, sol());
     }
 }
