@@ -1,10 +1,28 @@
 #include <stdio.h>
+#define MAX 2501
+void showMap();
+void quClear();
+int isEmpty();
+int isFull();
+void push();
+int pop();
 
 int M, N, T;
+int front = -1;
+int rear = -1;
 int circleDisk[51][51] = {
     0,
 };
+typedef struct queue
+{
+    int x;
+    int y;
+    int data;
+} Queue;
 
+Queue qu[MAX] = {
+    0,
+};
 /*
 5/3 1.6 2>
 12/5 2.4 2>
@@ -26,71 +44,138 @@ counter[pick 1th] : 1123
 2.4
 2 x
 */
-void showMap();
+
+void quClear()
+{
+    while (!isEmpty())
+    {
+        pop();
+    }
+}
+
+int isEmpty(void)
+{
+    if (front == rear)
+        return 1;
+    else
+        return 0;
+}
+int isFull(void)
+{
+    int tmp = (rear + 1) % MAX;
+    if (tmp == front)
+        return 1;
+    else
+        return 0;
+}
+
+void push(int x, int y)
+{
+    if (isFull())
+    {
+    }
+    else
+    {
+        qu[rear].x = x;
+        qu[rear].y = y;
+        rear = (rear + 1) % MAX;
+    }
+}
+
+int pop()
+{
+    int test;
+    Queue *tempQ = malloc(sizeof(Queue));
+    if (!isEmpty())
+    {
+        tempQ = &qu[front];
+        test = front;
+        front = (front + 1) % MAX;
+        return test;
+    }
+    return -1;
+}
 
 void calAvg()
 {
-    int avg = 0, sumNum = 0;
+    int avg = 0, sumNum = 0, cnt = 0;
     int i, j, row;
+
     for (i = 0; i < M; i++)
     {
         for (j = 0; j < M; j++)
         {
             /* code */
-            sumNum += circleDisk[i][j];
+            // printf("circle[%d][%d]:%d\n",i,j,circleDisk[i][j]);
+            if (circleDisk[i][j])
+            {
+                sumNum += circleDisk[i][j];
+                cnt++;
+            }
         }
     }
-
-    avg = sumNum / M;
-
-    for (row = 0; row < M; row++)
+    // showMap();
+    avg = sumNum / cnt;
+    printf("SUM[%d] AVG[%d]\n", sumNum, avg);
+    for (i = 0; i < M; i++)
     {
         if (sumNum % M)
         {
-            for (i = 0; i < M; i++)
+            for (j = 0; j < M; j++)
             {
-                if (circleDisk[row][i] >= avg)
+                if (circleDisk[i][j])
                 {
-                    circleDisk[row][i] -= 1;
-                }
-                else
-                {
-                    circleDisk[row][i] += 1;
+                    if (circleDisk[i][j] > avg)
+                    {
+
+                        circleDisk[i][j] -= 1;
+                    }
+                    else
+                    {
+                        circleDisk[i][j] += 1;
+                    }
                 }
             }
         }
         else
         {
-            for (i = 0; i < M; i++)
+            for (j = 0; j < M; j++)
             {
-                if (circleDisk[row][i] > avg)
+                if (circleDisk[i][j] && circleDisk[i][j] != avg)
                 {
-                    circleDisk[row][i] -= 1;
+                    if (circleDisk[i][j] > avg)
+                    {
+
+                        circleDisk[i][j] -= 1;
+                    }
+                    else
+                    {
+                        circleDisk[i][j] += 1;
+                    }
                 }
-                if (circleDisk[row][i] < avg)
-                    circleDisk[row][i] += 1;
             }
         }
     }
 }
 int deleteAction(int row)
 {
-    int i, temp, isdeleteExecute = 0, sumNum = 0, avg = 0;
+    int i,j, tempLeft, tempRight, isdeleteExecute = 0, execAction = 0, avg = 0;
+
     for (i = 0; i < M; i++)
     {
         isdeleteExecute = 0;
         //same Circle
-        if (circleDisk[row][i] && circleDisk[row][i] == circleDisk[row][temp = i - 1 >= 0 ? i - 1 : M - 1])
+        if (circleDisk[row][i] && circleDisk[row][i] == circleDisk[row][tempLeft = i - 1 >= 0 ? i - 1 : M - 1])
         {
             // printf("[%d][%d] temp-1[%d]\n", row, i, temp);
-            circleDisk[row][temp] = 0;
+            circleDisk[row][tempLeft] = 0;
             isdeleteExecute = 1;
         }
-        if (circleDisk[row][i] && circleDisk[row][i] == circleDisk[row][temp = i + 1 < M ? i + 1 : 0])
+        if (circleDisk[row][i] && circleDisk[row][i] == circleDisk[row][tempRight = i + 1 < M ? i + 1 : 0])
         {
             // printf("[%d][%d] temp+1[%d]\n", row, i, temp);
 
-            circleDisk[row][temp] = 0;
+            circleDisk[row][tempRight] = 0;
 
             isdeleteExecute = 1;
         }
@@ -112,10 +197,11 @@ int deleteAction(int row)
         if (isdeleteExecute)
         {
             circleDisk[row][i] = 0;
+            execAction = 1;
         }
         // showMap();
     }
-    return isdeleteExecute;
+    return execAction;
 }
 
 void rotation(int row, int zeroPos)
@@ -125,7 +211,7 @@ void rotation(int row, int zeroPos)
     },
         i;
     int circleSize = M;
-    printf("zeorpos : %d\n",zeroPos);
+    printf("zeorpos : %d\n", zeroPos);
     for (i = 0; i < M; i++)
     {
         if (zeroPos + i >= circleSize)
@@ -151,11 +237,13 @@ int selectZeroPos(int row, int direction, int nTimes)
     temp = nTimes % M;
     // direction 1== counterclockwise 0==counterwise
     printf("temp:%d M-1-temp:%d \n", temp, M - 1 - temp);
-    if(!direction){
-     return  M-temp;
-
-    }else{
-     return temp;
+    if (!direction)
+    {
+        return M - temp;
+    }
+    else
+    {
+        return temp;
     }
 
     // 1234
@@ -177,23 +265,29 @@ void showMap()
 void sol(int x, int d, int k)
 {
     int i = 0, retval = 0;
-    for (i = 0; i < M; i++)
+    for (i = 0; i < N; i++)
     {
         // x:row, d:direction 0==clockwise 1==counterwise k:nTimes
 
         if (((i + 1) % x) == 0)
         {
-            printf("Show rotation[%d]\n", i);
+            printf("Show x[%d] rotation[%d]\n", x, i);
             rotation(i, selectZeroPos(i, d, k));
+            showMap();
         }
     }
-    // showMap();
 
     for (i = 0; i < M; i++)
     {
-        retval = deleteAction(i);
+        retval += deleteAction(i);
     }
-    // showMap();
+    if (!retval)
+    {
+        printf("RETVAL %d\n", retval);
+
+        calAvg();
+    }
+    showMap();
 }
 int main()
 {
@@ -226,6 +320,5 @@ int main()
             circleSumation += circleDisk[i][j];
         }
     }
-    showMap();
     printf("%d\n", circleSumation);
 }
