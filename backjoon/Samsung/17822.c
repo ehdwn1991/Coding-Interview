@@ -1,112 +1,27 @@
 #include <stdio.h>
-#define MAX 2501
-void showMap();
-void quClear();
-int isEmpty();
-int isFull();
-void push();
-int pop();
+#include <string.h>
 
 int M, N, T;
-int front = -1;
-int rear = -1;
+
 int circleDisk[51][51] = {
     0,
 };
-typedef struct queue
-{
-    int x;
-    int y;
-    int data;
-} Queue;
-
-Queue qu[MAX] = {
+int compCircleDisk[51][51] = {
     0,
 };
-/*
-5/3 1.6 2>
-12/5 2.4 2>
-12/4 3 3>
-기준 0
-0 1 2 3 4 5
-2번 회전
-size 6
-pick 4
 
-1123
-left pick
-clock[pick 3th]: 3112
-
-3112
-right pick
-counter[pick 1th] : 1123
-
-2.4
-2 x
-*/
-
-void quClear()
+int calAvg()
 {
-    while (!isEmpty())
-    {
-        pop();
-    }
-}
-
-int isEmpty(void)
-{
-    if (front == rear)
-        return 1;
-    else
-        return 0;
-}
-int isFull(void)
-{
-    int tmp = (rear + 1) % MAX;
-    if (tmp == front)
-        return 1;
-    else
-        return 0;
-}
-
-void push(int x, int y)
-{
-    if (isFull())
-    {
-    }
-    else
-    {
-        qu[rear].x = x;
-        qu[rear].y = y;
-        rear = (rear + 1) % MAX;
-    }
-}
-
-int pop()
-{
-    int test;
-    Queue *tempQ = malloc(sizeof(Queue));
-    if (!isEmpty())
-    {
-        tempQ = &qu[front];
-        test = front;
-        front = (front + 1) % MAX;
-        return test;
-    }
-    return -1;
-}
-
-void calAvg()
-{
-    int avg = 0, sumNum = 0, cnt = 0;
+    // 평균 계산 할떄에 정수 형으로 계산시 틀림으로 처리
+    // 떄문에 반드시 avg는 double 형으로
+    double avg = 0, sumNum = 0;
+    int cnt = 0;
     int i, j, row;
 
-    for (i = 0; i < M; i++)
+    for (i = 0; i < N; i++)
     {
         for (j = 0; j < M; j++)
         {
-            /* code */
-            // printf("circle[%d][%d]:%d\n",i,j,circleDisk[i][j]);
             if (circleDisk[i][j])
             {
                 sumNum += circleDisk[i][j];
@@ -114,92 +29,74 @@ void calAvg()
             }
         }
     }
-    // showMap();
-    avg = sumNum / cnt;
-    printf("SUM[%d] AVG[%d]\n", sumNum, avg);
-    for (i = 0; i < M; i++)
+
+    if (cnt != 0)
     {
-        if (sumNum % M)
+        
+        avg = sumNum / cnt;
+        for (i = 0; i < N; i++)
         {
-            for (j = 0; j < M; j++)
             {
-                if (circleDisk[i][j])
+                for (j = 0; j < M; j++)
                 {
-                    if (circleDisk[i][j] > avg)
+                    if (circleDisk[i][j])
                     {
-
-                        circleDisk[i][j] -= 1;
-                    }
-                    else
-                    {
-                        circleDisk[i][j] += 1;
+                        if (circleDisk[i][j] > avg)
+                        {
+                            circleDisk[i][j] -= 1;
+                        }
+                        else if(circleDisk[i][j] < avg)
+                        {
+                            circleDisk[i][j] += 1;
+                        }
                     }
                 }
             }
         }
-        else
-        {
-            for (j = 0; j < M; j++)
-            {
-                if (circleDisk[i][j] && circleDisk[i][j] != avg)
-                {
-                    if (circleDisk[i][j] > avg)
-                    {
-
-                        circleDisk[i][j] -= 1;
-                    }
-                    else
-                    {
-                        circleDisk[i][j] += 1;
-                    }
-                }
-            }
-        }
+        return 1;
+    }else{
+        return 0;
     }
 }
+
 int deleteAction(int row)
 {
-    int i,j, tempLeft, tempRight, isdeleteExecute = 0, execAction = 0, avg = 0;
+    int i, j, tempLeft, tempRight, isdeleteExecute = 0, execAction = 0, avg = 0;
 
     for (i = 0; i < M; i++)
     {
+
         isdeleteExecute = 0;
-        //same Circle
         if (circleDisk[row][i] && circleDisk[row][i] == circleDisk[row][tempLeft = i - 1 >= 0 ? i - 1 : M - 1])
         {
-            // printf("[%d][%d] temp-1[%d]\n", row, i, temp);
-            circleDisk[row][tempLeft] = 0;
+            compCircleDisk[row][tempLeft] = 1;
             isdeleteExecute = 1;
         }
         if (circleDisk[row][i] && circleDisk[row][i] == circleDisk[row][tempRight = i + 1 < M ? i + 1 : 0])
         {
-            // printf("[%d][%d] temp+1[%d]\n", row, i, temp);
-
-            circleDisk[row][tempRight] = 0;
+            compCircleDisk[row][tempRight] = 1;
 
             isdeleteExecute = 1;
         }
-        //same line in other adjoin circle
         if (circleDisk[row][i] && (row + 1 < M && circleDisk[row][i] == circleDisk[row + 1][i]))
         {
-            // printf("[%d][%d] row+1\n", row, i);
-            circleDisk[row + 1][i] = 0;
+            compCircleDisk[row + 1][i] = 1;
+
             isdeleteExecute = 1;
         }
         if (circleDisk[row][i] && (!(row - 1 < 0) && circleDisk[row][i] == circleDisk[row - 1][i]))
         {
-            // printf("[%d][%d] row-1\n", row, i);
+            compCircleDisk[row - 1][i] = 1;
 
-            circleDisk[row - 1][i] = 0;
             isdeleteExecute = 1;
         }
 
         if (isdeleteExecute)
         {
-            circleDisk[row][i] = 0;
+            compCircleDisk[row][i] = 1;
+
             execAction = 1;
         }
-        // showMap();
     }
     return execAction;
 }
@@ -211,7 +108,6 @@ void rotation(int row, int zeroPos)
     },
         i;
     int circleSize = M;
-    printf("zeorpos : %d\n", zeroPos);
     for (i = 0; i < M; i++)
     {
         if (zeroPos + i >= circleSize)
@@ -226,7 +122,6 @@ void rotation(int row, int zeroPos)
 
     for (i = 0; i < M; i++)
     {
-        printf("temp[%d]:%d \t circle[%d]:[%d]\n", i, temp[i], i, circleDisk[row][i]);
         circleDisk[row][i] = temp[i];
     }
 }
@@ -235,8 +130,6 @@ int selectZeroPos(int row, int direction, int nTimes)
 {
     int i, temp;
     temp = nTimes % M;
-    // direction 1== counterclockwise 0==counterwise
-    printf("temp:%d M-1-temp:%d \n", temp, M - 1 - temp);
     if (!direction)
     {
         return M - temp;
@@ -245,50 +138,46 @@ int selectZeroPos(int row, int direction, int nTimes)
     {
         return temp;
     }
-
-    // 1234
-    // 4123 3412 2341 1234
 }
 
-void showMap()
-{
-    for (int i = 0; i < N; i++)
-    {
-        for (int j = 0; j < M; j++)
-        {
-            printf("%d ", circleDisk[i][j]);
-        }
-        printf("\n");
-    }
-    printf("########\n");
-}
 void sol(int x, int d, int k)
 {
-    int i = 0, retval = 0;
+    int i = 0, j, retval = 0;
+    memset(compCircleDisk, 0, sizeof(compCircleDisk));
+
     for (i = 0; i < N; i++)
     {
         // x:row, d:direction 0==clockwise 1==counterwise k:nTimes
-
         if (((i + 1) % x) == 0)
         {
-            printf("Show x[%d] rotation[%d]\n", x, i);
             rotation(i, selectZeroPos(i, d, k));
-            showMap();
         }
     }
 
-    for (i = 0; i < M; i++)
+    for (i = 0; i < N; i++)
     {
         retval += deleteAction(i);
     }
     if (!retval)
     {
-        printf("RETVAL %d\n", retval);
 
         calAvg();
     }
-    showMap();
+    else
+    {
+        for (i = 0; i < N; i++)
+        {
+            for (j = 0; j < M; j++)
+            {
+                if (compCircleDisk[i][j])
+                {
+                    circleDisk[i][j] = 0;
+                }
+            }
+        }
+    }
 }
+
 int main()
 {
     int x, d, k;
@@ -306,14 +195,16 @@ int main()
             j = 0;
         }
     }
-    showMap();
+
     for (solTimes = 0; solTimes < T; solTimes++)
     {
         scanf("%d %d %d", &x, &d, &k);
-        // printf("x:%d d:%d k:%d\n", x, d, k);
-        sol(x, d, k);
+
+        {
+            sol(x, d, k);
+        }
     }
-    for (i = 0; i < M; i++)
+    for (i = 0; i < N; i++)
     {
         for (j = 0; j < M; j++)
         {
