@@ -1,19 +1,40 @@
 #include <stdio.h>
 
 
+
+
 int main(){
-    int i;
-    int a=0x00000345;
-    int b=0x3;
+    int i,j;
+    int *a;
+    int val;
+    int *b;
+    int *temp;
+    int val1=0x5;
+    val=0x9345;
+    a=&val;
+    b=&val1;
     // b= a;
-    printf("%0.8x\n",a&(b));
 
-    for ( i = 1; i < 8; i++)
+    for ( i = 0; i < 4; i++)
     {
-    if(a&b<<(i*4)){
-    printf("%0.8x\n",b<<(i*4));
 
+    // find
+    if(*a&*b<<((i+1)*4)){
+        //n 번 위로 클리어
+
+    //clear
+    printf("%0.8x\n",*a^*b<<((i+1)*4));
+    temp=a;
+            *temp=*temp>>(i+1)*4;
+    printf("be temp[%0.8x]\n",*temp);
+
+            *temp=*temp<<(i+1)*4;
+    printf("af temp[%0.8x]\n",*temp);
+
+    *temp=*a^*temp;
+    printf("stack [] clear [%0.8x]\n",*temp);    
     }
+
 
     }
     
