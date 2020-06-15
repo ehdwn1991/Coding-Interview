@@ -27,6 +27,10 @@ CHESSMAN *mensQu[4] = {
 CHESSMAN *extractMens(void *headPoint, CHESSMAN *point);
 void additionMens(void *headPoint, CHESSMAN *point);
 CHESSMAN *reverseList();
+void execWhiteBoard(int nthChessman, int forwardRow, int forwardCol);
+void execRedBoard(int nthChessman, int forwardRow, int forwardCol);
+void execBlueBoard(int nthChessman, int forwardRow, int forwardCol);
+
 void simpleMove(int nthChessman, int forwardRow, int forwardCol)
 {
     chessMenMap[forwardRow][forwardCol] = infoChessMens[nthChessman];
@@ -47,8 +51,8 @@ void changeListElement(int nthChessman, int forwardRow, int forwardCol)
     while (head != NULL)
     {
         // printf("[%d]th [%d][%d]: d[%d] count[%d]\n", head->numbering, head->row, head->col, head->dir, head->countStack);
-        head->row=forwardRow;
-        head->col=forwardCol;
+        head->row = forwardRow;
+        head->col = forwardCol;
         head = head->next;
     }
     // infoChessMens[nthChessman]->row = forwardRow;
@@ -68,13 +72,16 @@ void execBlueBoard(int nthChessman, int forwardRow, int forwardCol)
     {
         if (forwardColor == 0)
         {
+            printf("White\n");
             execWhiteBoard(nthChessman, forwardRow, forwardCol);
         }
         else
         {
+            printf("Red\n");
+
             execRedBoard(nthChessman, forwardRow, forwardCol);
         }
-        changeListElement(nthChessman, forwardRow, forwardCol);
+
     }
 }
 
@@ -105,6 +112,7 @@ void execWhiteBoard(int nthChessman, int forwardRow, int forwardCol)
     {
         if (chessMenMap[forwardRow][forwardCol])
         {
+            printf("Stack addtion\n");
             additionMens(&chessMenMap[forwardRow][forwardCol], infoChessMens[nthChessman]);
         }
         else
@@ -136,24 +144,25 @@ int forwardBoardColor(int nthChessman, int manRow, int manCol, int forwardRow, i
         switch (chessColorMap[forwardRow][forwardCol])
         {
         case 0: // White
-            printf("White\n");
+            // printf("White\n");
             execWhiteBoard(nthChessman, forwardRow, forwardCol);
             break;
 
         case 1: // Red
-            printf("Red\n");
+            // printf("Red\n");
             execRedBoard(nthChessman, forwardRow, forwardCol);
             break;
 
         case 2: //Blue
-            printf("Blue\n");
-
+            // printf("Blue\n");
+            execBlueBoard(nthChessman, forwardRow, forwardCol);
             break;
         }
     }
     else
     {
-        printf("Blue\n");
+        execBlueBoard(nthChessman, forwardRow, forwardCol);
+        // printf("Blue\n");
     }
     return 0;
 }
@@ -181,8 +190,27 @@ int chessmanHasStack(CHESSMAN *point)
 int gameIsEnd()
 {
     int isEnd;
+    int i, j;
     CHESSMAN *temp;
-    
+    for (i = 1; i <= N; i++)
+    {
+        for (j = 1; j <= N; j++)
+        {
+            if (chessMenMap[i][j])
+            {
+                isEnd = nChessMesList(((CHESSMAN *)chessMenMap[i][j]));
+                // printf("isEnd [%d] [%d][%d]\n",isEnd,i,j);
+                if (isEnd >3)
+                {
+                    return isEnd;
+                }
+                else
+                {
+                    isEnd = 0;
+                }
+            }
+        }
+    }
 
     return isEnd;
 }
@@ -210,16 +238,18 @@ void showInfoChessMens()
     }
 }
 
-void nChessMesList(CHESSMAN *headMen)
+int nChessMesList(CHESSMAN *headMen)
 {
-
+    int stackCount = 0;
     CHESSMAN *head;
     head = headMen;
     while (head != NULL)
     {
-        printf("[%d][%d]: number[%d] d[%d] count[%d]\n", head->row, head->col, head->numbering, head->dir, head->countStack);
+        stackCount++;
+        // printf("[%d][%d]: number[%d] d[%d] count[%d]\n", head->row, head->col, head->numbering, head->dir, head->countStack);
         head = head->next;
     }
+    return stackCount;
 }
 void showListChessMens()
 {
@@ -245,10 +275,16 @@ int sol()
     int i;
     while (!gameIsEnd())
     {
-        for (i = 1; i < K; i++)
+        if (timesOfTurn >= 1000)
+        {
+            timesOfTurn = -1;
+            break;
+        }
+        for (i = 1; i <= K; i++)
         {
             moveChessMen(i);
         }
+        printf("[%d]times==========>\n",timesOfTurn);
         showListChessMens();
         timesOfTurn++;
     }
@@ -396,7 +432,8 @@ int main()
         infoChessMens[k]->numbering = k;
         chessMenMap[infoChessMens[k]->row][infoChessMens[k]->col] = infoChessMens[k];
     }
-
+    // showListChessMens();
+    printf("%d\n",sol());
     // showListChessMens();
     // printf("Before ##########\n");
     // for (i = 1; i < K; i++)
@@ -406,8 +443,8 @@ int main()
     // }
     // showListChessMens();
 
-    printf("Addtion After extract\n");
-    addtionAfterextract();
+    // printf("Addtion After extract\n");
+    // addtionAfterextract();
 
     //  showListChessMens();
     // nChessMesList(infoChessMens[1]);
