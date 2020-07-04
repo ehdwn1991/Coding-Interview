@@ -196,7 +196,7 @@ void moveChessMen(int nthChessman)
     forwardHorizontal = infoChessMens[nthChessman]->col + dirHorizontal[infoChessMens[nthChessman]->dir];
     printf("move [%d][%d]\n", forwardVertical, forwardHorizontal);
     forwardBoardColor(nthChessman, infoChessMens[nthChessman]->row, infoChessMens[nthChessman]->col, forwardVertical, forwardHorizontal);
-    showChessMenMap();
+    // showChessMenMap();
 }
 
 int chessmanHasStack(CHESSMAN *point)
@@ -322,7 +322,14 @@ int sol()
             moveChessMen(i);
         }
         printf("[%d]times==========>\n",timesOfTurn);
-        // showListChessMens();
+        showListChessMens();
+        // for ( i = 1; i <= K; i++)
+        // {
+        //     /* code */
+        //     showListChessMens();
+        // }
+        
+        printf("End!!!\n");
         timesOfTurn++;
     }
 
@@ -402,6 +409,9 @@ CHESSMAN *extractMens(void *headPoint, CHESSMAN *point)
     {
         if (p->numbering == point->numbering)
         {
+            printf("#################Debug###############3\n");
+            nChessMesList(r);
+            printf("#################End###############3\n");
             r->next = NULL;
             break;
         }
