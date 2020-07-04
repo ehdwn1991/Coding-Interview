@@ -100,3 +100,5 @@ Thumbs.db
 ./.git/hooks/update.sample
 ./.git/hooks/prepare-commit-msg.sample
 ./.git/hooks/applypatch-msg.sample
+
+log
