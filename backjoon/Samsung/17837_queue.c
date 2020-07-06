@@ -99,7 +99,7 @@ void execRedBoard(int nthChessman, int forwardRow, int forwardCol)
         temp = reverseList(infoChessMens[nthChessman]);
         printf("after infoChessMens [%d] [%d][%d]\n",infoChessMens[nthChessman]->numbering,infoChessMens[nthChessman]->row,infoChessMens[nthChessman]->col);
         printf("after temp [%d] [%d][%d]\n",temp->numbering,temp->row,temp->col);
-    chessMenMap[infoChessMens[nthChessman]->row][infoChessMens[nthChessman]->col] = 0;
+        chessMenMap[infoChessMens[nthChessman]->row][infoChessMens[nthChessman]->col] = 0;
 
     }
     else
@@ -142,18 +142,22 @@ void execWhiteBoard(int nthChessman, int forwardRow, int forwardCol)
     }
     else
     {
-        temp = extractMens(&chessMenMap[forwardRow][forwardCol], infoChessMens[nthChessman]);
+        temp = extractMens(&chessMenMap[infoChessMens[nthChessman]->row][infoChessMens[nthChessman]->col], &infoChessMens[nthChessman]);
         if (chessMenMap[forwardRow][forwardCol])
         {
             additionMens(&chessMenMap[forwardRow][forwardCol], temp);
         }
         else
         {
-            simpleMove(nthChessman, forwardRow, forwardCol);
-            // chessMenMap[forwardRow][forwardCol] = temp;
+            // simpleMove(nthChessman, forwardRow, forwardCol);
+            printf("Trun1 move will move [%d][%d]\n",forwardRow,forwardCol);
+            nChessMesList(infoChessMens[nthChessman]);
+            chessMenMap[forwardRow][forwardCol] = temp;
+            printf("info 2:\n");
+            nChessMesList(infoChessMens[2]);
         }
     }
-    nChessMesList(&chessMenMap[forwardRow][forwardCol]);
+    nChessMesList(chessMenMap[forwardRow][forwardCol]);
     changeListElement(nthChessman, forwardRow, forwardCol);
 }
 
@@ -360,6 +364,8 @@ CHESSMAN *reverseList(CHESSMAN *point)
     CHESSMAN *p, *q, *r;
     p = point;
     q = NULL;
+    printf("####Before reverseList\n");
+    nChessMesList(p);
     while (p != NULL)
     {
         r = q;
@@ -368,6 +374,7 @@ CHESSMAN *reverseList(CHESSMAN *point)
         q->next = r;
     }
     // printf("reverse [%d] %d,%d\n",q->numbering,q->row,q->col);
+    printf("####After reverseList\n");
     nChessMesList(q);
     printf("Reverse End\n");
     return q;
@@ -413,6 +420,10 @@ CHESSMAN *extractMens(void *headPoint, CHESSMAN *point)
             nChessMesList(r);
             printf("#################End###############3\n");
             r->next = NULL;
+            printf("point2\n");
+            nChessMesList(infoChessMens[2]);
+            printf("End point2\n");
+            
             break;
         }
         r = p;
@@ -470,6 +481,38 @@ void addtionAfterextract()
     // nChessMesList(infoChessMens[1]);
 }
 
+void debugExtarct(){
+     CHESSMAN *temp;
+    printf("1\n");
+    infoChessMens[1]->next = infoChessMens[2];
+    printf("2\n");
+    infoChessMens[2]->next = infoChessMens[3];
+    printf("3\n");
+    infoChessMens[3]->next = infoChessMens[4];
+
+    infoChessMens[1]->row = 2;
+    infoChessMens[1]->col = 1;
+    infoChessMens[2]->row = 2;
+    infoChessMens[2]->col = 1;
+    infoChessMens[3]->row = 2;
+    infoChessMens[3]->col = 1;
+    infoChessMens[4]->row = 2;
+    infoChessMens[4]->col = 1;
+    printf("before 1");
+nChessMesList(infoChessMens[1]);
+temp = extractMens(&chessMenMap[2][1], infoChessMens[3]);
+   chessMenMap[4][4]=temp;
+    printf("after 1\n");
+// nChessMesList(infoChessMens[1]);
+nChessMesList(chessMenMap[2][1]);
+    printf("after 3\n");
+// nChessMesList(infoChessMens[3]);
+nChessMesList(chessMenMap[4][4]);
+
+
+
+}
+
 int main()
 {
     int i, j, k;
@@ -500,6 +543,8 @@ int main()
         chessMenMap[infoChessMens[k]->row][infoChessMens[k]->col] = infoChessMens[k];
 
     }
+// debugExtarct();
+
     // addtionAfterextract();
     // showListChessMens();
     printf("%d\n",sol());
