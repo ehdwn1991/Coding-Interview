@@ -1,174 +1,329 @@
 #include <stdio.h>
 #include <stdlib.h>
-int N,K;
-int chessColorMap[11][11]={0,};
-int chessMenMap[11][11]={0,};
+int N, K;
+int chessColorMap[15][15] = {{0},};
 
-typedef struct chessMan{
-    int row,col,dir;
-    int countStack; //def 1
+int dirHorizontal[5] = {0, 1, -1, 0, 0};
+int dirVertical[5] = {0, 0, 0, -1, 1};
+typedef struct chessMan
+{
+    int row, col, dir;
+    int numbering;
     struct chessMan *next;
+} CHESSMAN;
 
-}CHESSMAN;
+CHESSMAN *infoChessMens[12]={0,};
+CHESSMAN *chessMenMap[15][15]= {{0},};;
+CHESSMAN *extractMens(CHESSMAN *headPoint, int point);
+void additionMens(CHESSMAN *headPoint, CHESSMAN *point);
+CHESSMAN *reverseList();
+void execWhiteBoard(int nthChessman, int forwardRow, int forwardCol);
+void execRedBoard(int nthChessman, int forwardRow, int forwardCol);
+void execBlueBoard(int nthChessman, int forwardRow, int forwardCol);
 
-CHESSMAN *infoChessMens[11]={0,};
-
-void execBlueBoard(){
-
+void simpleMove(int nthChessman, int forwardRow, int forwardCol)
+{
+    chessMenMap[forwardRow][forwardCol] = infoChessMens[nthChessman];
 }
-void execRedBoard(){
 
+int inlineCheck(int forwardRow, int forwardCol)
+{
+
+    if ((forwardRow >= 1 && forwardRow <= N) && (forwardCol >= 1 && forwardCol <= N))
+    {
+        return 1;
+    }
+    return 0;
 }
-void execWhiteBoard(int nthChessman,int forwardRow,int forwardCol){
-
+void changeListElement(int nthChessman, int forwardRow, int forwardCol)
+{
+    CHESSMAN *head = infoChessMens[nthChessman];
+    while (head != NULL)
+    {
+        head->row = forwardRow;
+        head->col = forwardCol;
+        head = head->next;
+    }
 }
 
-int forwardBoardColor(int manRow,int manCol,int forwardRow,int forwardCol){
+void execBlueBoard(int nthChessman, int forwardRow, int forwardCol)
+{
+    int tempDir = infoChessMens[nthChessman]->dir;
+    int forwardColor;
+    infoChessMens[nthChessman]->dir = (tempDir % 2 == 0 ? tempDir - 1 : tempDir + 1);
+    forwardColor = chessColorMap[infoChessMens[nthChessman]->row + dirVertical[infoChessMens[nthChessman]->dir]][infoChessMens[nthChessman]->col + dirHorizontal[infoChessMens[nthChessman]->dir]];
+    forwardRow = infoChessMens[nthChessman]->row + dirVertical[infoChessMens[nthChessman]->dir];
+    forwardCol = infoChessMens[nthChessman]->col + dirHorizontal[infoChessMens[nthChessman]->dir];
+    if (forwardColor < 2 && inlineCheck(forwardRow, forwardCol))
+    {
+        if (forwardColor == 0)
+        {
+            execWhiteBoard(nthChessman, forwardRow, forwardCol);
+        }
+        else
+        {
 
-    switch (chessColorMap[forwardRow][forwardCol]){
-        case 0:  // White
+            execRedBoard(nthChessman, forwardRow, forwardCol);
+        }
+    }
+}
 
-        break;
-        
-        case 1: // Red
+void execRedBoard(int nthChessman, int forwardRow, int forwardCol)
+{
+    CHESSMAN *temp;
 
-        break;
-        
-        case 2:  //Blues
+    if (nthChessmanLoc(nthChessman) == 1)
+    {
+        temp = reverseList(infoChessMens[nthChessman]);
+        chessMenMap[infoChessMens[nthChessman]->row][infoChessMens[nthChessman]->col] = NULL;
+    }
+    else
+    {
 
-        break;
+        temp = extractMens(chessMenMap[infoChessMens[nthChessman]->row][infoChessMens[nthChessman]->col], infoChessMens[nthChessman]->numbering);
+        temp = reverseList(temp);
+    }
+    changeListElement(temp->numbering, forwardRow, forwardCol);
 
+    if (chessMenMap[forwardRow][forwardCol] != NULL)
+    {
+        additionMens(chessMenMap[forwardRow][forwardCol], temp);
+    }
+    else
+    {
+        chessMenMap[forwardRow][forwardCol] = temp;
     }
 
 }
 
-void moveChessMen(int numOfChessMan){
+void execWhiteBoard(int nthChessman, int forwardRow, int forwardCol)
+{
+    CHESSMAN *temp;
+    if (nthChessmanLoc(nthChessman) == 1)
+    {
+        if (chessMenMap[forwardRow][forwardCol] != NULL)
+        {
+            additionMens(chessMenMap[forwardRow][forwardCol], infoChessMens[nthChessman]);
+        }
+        else
+        {
+            simpleMove(nthChessman, forwardRow, forwardCol);
+        }
+        chessMenMap[infoChessMens[nthChessman]->row][infoChessMens[nthChessman]->col] = NULL;
+    }
+    else
+    {
+        temp = extractMens(chessMenMap[infoChessMens[nthChessman]->row][infoChessMens[nthChessman]->col], infoChessMens[nthChessman]->numbering);
 
-
-
+        if (chessMenMap[forwardRow][forwardCol] != NULL)
+        {
+            additionMens(chessMenMap[forwardRow][forwardCol], temp);
+        }
+        else
+        {
+            chessMenMap[forwardRow][forwardCol] = temp;
+        }
+    }
+    changeListElement(nthChessman, forwardRow, forwardCol);
 }
 
-int gameIsEnd(){
+int forwardBoardColor(int nthChessman, int forwardRow, int forwardCol)
+{
+    if (inlineCheck(forwardRow, forwardCol))
+    {
+        switch (chessColorMap[forwardRow][forwardCol])
+        {
+        case 0: // White
+            execWhiteBoard(nthChessman, forwardRow, forwardCol);
+            break;
+
+        case 1: // Red
+            execRedBoard(nthChessman, forwardRow, forwardCol);
+            break;
+
+        case 2: //Blue
+            execBlueBoard(nthChessman, forwardRow, forwardCol);
+            break;
+        }
+    }
+    else
+    {
+        execBlueBoard(nthChessman, forwardRow, forwardCol);
+    }
+
+    return gameIsEnd();
+}
+
+int moveChessMen(int nthChessman)
+{
+    int forwardHorizontal, forwardVertical;
+    forwardVertical = infoChessMens[nthChessman]->row + dirVertical[infoChessMens[nthChessman]->dir];
+    forwardHorizontal = infoChessMens[nthChessman]->col + dirHorizontal[infoChessMens[nthChessman]->dir];
+    return forwardBoardColor(nthChessman, forwardVertical, forwardHorizontal);
+}
+
+int gameIsEnd()
+{
     int isEnd;
+    int i, j;
+    for (i = 1; i <= N; i++)
+    {
+        for (j = 1; j <= N; j++)
+        {
+            if (chessMenMap[i][j])
+            {
+                isEnd = nChessMesList(chessMenMap[i][j]);
+                if (isEnd > 3)
+                {
+                    return isEnd;
+                }
+                else
+                {
+                    isEnd = 0;
+                }
+            }
+        }
+    }
 
     return isEnd;
 }
 
-void showChessMenMap(){
-    int i,j;
-    for ( i = 1; i <= N; i++)
-    {
-        for ( j = 1; j <= N; j++)
-        {
-            printf("%d ",chessMenMap[i][j]);
-        }
-        printf("\n");
-        
-    }
-    
-}
-
-void showInfoChessMens(){
-    int i;
-
-for ( i = 1; i <= K; i++)
+int nChessMesList(CHESSMAN *headMen)
 {
-    printf("[%d][%d]: d[%d] count[%d]\n",infoChessMens[i]->row,infoChessMens[i]->col,infoChessMens[i]->dir,infoChessMens[i]->countStack);
-}
+    int stackCount = 0;
+    CHESSMAN *head;
+    head = headMen;
+    while (head != NULL)
+    {
+        stackCount++;
+        head = head->next;
+    }
+    return stackCount;
 }
 
-int sol(){
-    int timesOfTurn=0;
-    int i;
+int sol()
+{
+    int timesOfTurn = 1;
+    int i,stopGame=0;
     while (!gameIsEnd())
     {
-        for ( i = 0; i < K; i++)
+        if (timesOfTurn >= 1000)
         {
-            /* code */
-            moveChessMen(i);
+            timesOfTurn = -1;
+            break;
         }
-        
+        for (i = 1; i <= K; i++)
+        {
+            if(moveChessMen(i)>3){
+                return timesOfTurn;
+            }
+        }
         timesOfTurn++;
     }
-    
-    
 
     return timesOfTurn;
 }
 
+int nthChessmanLoc(int nthChessman)
+{
+    CHESSMAN *head;
+    int i = 1;
+    head = chessMenMap[infoChessMens[nthChessman]->row][infoChessMens[nthChessman]->col];
+    while (head != NULL)
+    {
+        if (head->numbering == infoChessMens[nthChessman]->numbering)
+        {
+            return i;
+        }
+        head = head->next;
+        i++;
+    }
+    return 0;
+}
 
-CHESSMAN *reverseList(CHESSMAN *point){
-     CHESSMAN *p, *q, *r;
+CHESSMAN *reverseList(CHESSMAN *point)
+{
+    CHESSMAN *p, *q, *r;
     p = point;
     q = NULL;
-    while(p!=NULL) {
+    while (p != NULL)
+    {
         r = q;
         q = p;
         p = p->next;
         q->next = r;
     }
-
-return q;
+    return q;
 }
 
-
-
-
-int main(){
-    int i,j,k;
-
-scanf("%d %d",&N,&K);
-
-for ( i = 1; i <= N; i++)
+void additionMens(CHESSMAN *headPoint, CHESSMAN *point)
 {
-    for ( j = 1; j <= N; j++)
+    CHESSMAN *p;
+    p = headPoint;
+    while (p != NULL)
     {
-        scanf("%d",&chessColorMap[i][j]);
+        if (p->next == NULL)
+        {
+            p->next = point;
+            break;
+        }
+        p = p->next;
     }
 }
 
-for ( k = 1; k <= K; k++)
+CHESSMAN *extractMens(CHESSMAN *headPoint, int point)
 {
-    infoChessMens[k]=(CHESSMAN*)malloc(sizeof(CHESSMAN));
-    scanf("%d %d %d",&(infoChessMens[k]->row),&(infoChessMens[k]->col),&(infoChessMens[k]->dir));
-    infoChessMens[k]->countStack=1;
-    infoChessMens[k]->next=NULL;
-    chessMenMap[infoChessMens[k]->row][infoChessMens[k]->col]=k;
+    CHESSMAN *p, *r = NULL, *head;
+    int isFind = 0;
+    p = headPoint;
+
+    while (p != NULL && !isFind)
+    {
+        if (p->numbering == point)
+        {
+            (r)->next = NULL;
+            isFind = 1;
+
+            continue;
+        }
+        r = p;
+        p = p->next;
+    }
+    return p;
 }
 
-showInfoChessMens();
-
-showChessMenMap();
-printf("Before\n");
-
-CHESSMAN *head=infoChessMens[1];
-head->next=infoChessMens[2];
-infoChessMens[2]->next=infoChessMens[3];
-infoChessMens[3]->next=infoChessMens[4];
-
-CHESSMAN *temp=head;
-
-// show list
-while(temp!=NULL){
-printf("[%d][%d]: d[%d] count[%d]\n",temp->row,temp->col,temp->dir,temp->countStack);
-temp=temp->next;
+void freeAllResource()
+{
+    int i;
+    for (i = 1; i <= K; i++)
+    {
+        free(infoChessMens[i]);
+    }
 }
-printf("Before\n");
-// show list
-// while(temp!=NULL){
-// printf("[%d][%d]: d[%d] count[%d]\n",temp->row,temp->col,temp->dir,temp->countStack);
-// temp=temp->next;
-// }
 
+int main()
+{
+    int i, j, k;
+    scanf("%d %d", &N, &K);
 
-//Reverse
-//forward to backward
-head=reverseList(head);
-temp=head;
+    for (i = 1; i <= N; i++)
+    {
+        for (j = 1; j <= N; j++)
+        {
+            scanf("%d", &chessColorMap[i][j]);
+        }
+    }
 
-// show list
-while(temp!=NULL){
-printf("[%d][%d]: d[%d] count[%d]\n",temp->row,temp->col,temp->dir,temp->countStack);
-temp=temp->next;
-}
+    for (k = 1; k <= K; k++)
+    {
+        infoChessMens[k] = (CHESSMAN *)malloc(sizeof(CHESSMAN));
+        scanf("%d %d %d", &(infoChessMens[k]->row), &(infoChessMens[k]->col), &(infoChessMens[k]->dir));
+        infoChessMens[k]->next = NULL;
+        infoChessMens[k]->numbering = k;
+        chessMenMap[infoChessMens[k]->row][infoChessMens[k]->col] = infoChessMens[k];
+    }
+
+    printf("%d\n", sol());
+    freeAllResource();
+    return 0;
 }
